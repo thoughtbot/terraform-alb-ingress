@@ -14,18 +14,23 @@ resource "aws_alb_listener" "this" {
       null
     )
 
-    forward {
-      stickiness {
-        duration = 60
-        enabled  = false
-      }
+    # Terraform reports a perpetual diff with both foward and target_group_arn
+    dynamic "forward" {
+      for_each = length(var.target_groups) == 1 ? [] : [true]
 
-      dynamic "target_group" {
-        for_each = var.target_groups
+      content {
+        stickiness {
+          duration = 60
+          enabled  = false
+        }
 
-        content {
-          arn    = target_group.value.arn
-          weight = lookup(var.target_group_weights, target_group.key, 100)
+        dynamic "target_group" {
+          for_each = var.target_groups
+
+          content {
+            arn    = target_group.value.arn
+            weight = lookup(var.target_group_weights, target_group.key, 100)
+          }
         }
       }
     }
