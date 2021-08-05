@@ -54,6 +54,7 @@ module "ingress" {
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.14.0 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 3.45 |
 
 ## Providers
 
@@ -63,13 +64,13 @@ No providers.
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_acm_certificate"></a> [acm\_certificate](#module\_acm\_certificate) | ./modules/acm-certificate |  |
-| <a name="module_alb"></a> [alb](#module\_alb) | ./modules/alb |  |
-| <a name="module_alias"></a> [alias](#module\_alias) | ./modules/alb-route53-alias |  |
-| <a name="module_cloudwatch_alarms"></a> [cloudwatch\_alarms](#module\_cloudwatch\_alarms) | ./modules/alb-cloudwatch-alarms |  |
-| <a name="module_http"></a> [http](#module\_http) | ./modules/alb-http-redirect |  |
-| <a name="module_https"></a> [https](#module\_https) | ./modules/alb-https-forward |  |
-| <a name="module_target_group"></a> [target\_group](#module\_target\_group) | ./modules/alb-target-group |  |
+| <a name="module_acm_certificate"></a> [acm\_certificate](#module\_acm\_certificate) | ./modules/acm-certificate | n/a |
+| <a name="module_alb"></a> [alb](#module\_alb) | ./modules/alb | n/a |
+| <a name="module_alias"></a> [alias](#module\_alias) | ./modules/alb-route53-alias | n/a |
+| <a name="module_cloudwatch_alarms"></a> [cloudwatch\_alarms](#module\_cloudwatch\_alarms) | ./modules/alb-cloudwatch-alarms | n/a |
+| <a name="module_http"></a> [http](#module\_http) | ./modules/alb-http-redirect | n/a |
+| <a name="module_https"></a> [https](#module\_https) | ./modules/alb-https-forward | n/a |
+| <a name="module_target_group"></a> [target\_group](#module\_target\_group) | ./modules/alb-target-group | n/a |
 
 ## Resources
 

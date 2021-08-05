@@ -1,5 +1,6 @@
 module "alb" {
-  source = "./modules/alb"
+  providers = { aws = aws.cluster }
+  source    = "./modules/alb"
 
   description = var.description
   name        = var.name
@@ -10,7 +11,8 @@ module "alb" {
 }
 
 module "cloudwatch_alarms" {
-  source = "./modules/alb-cloudwatch-alarms"
+  providers = { aws = aws.cluster }
+  source    = "./modules/alb-cloudwatch-alarms"
 
   alarm_actions            = var.alarm_actions
   alarm_evaluation_minutes = var.alarm_evaluation_minutes
@@ -21,13 +23,15 @@ module "cloudwatch_alarms" {
 }
 
 module "http" {
-  source = "./modules/alb-http-redirect"
+  providers = { aws = aws.cluster }
+  source    = "./modules/alb-http-redirect"
 
   alb = module.alb.instance
 }
 
 module "https" {
-  source = "./modules/alb-https-forward"
+  providers = { aws = aws.cluster }
+  source    = "./modules/alb-https-forward"
 
   alb                      = module.alb.instance
   alternative_domain_names = var.alternative_domain_names
@@ -39,16 +43,18 @@ module "https" {
 }
 
 module "acm_certificate" {
-  for_each = toset(var.issue_certificates ? local.domain_names : [])
-  source   = "./modules/acm-certificate"
+  for_each  = toset(var.issue_certificates ? local.domain_names : [])
+  providers = { aws.certificate = aws.cluster, aws.route53 = aws.route53 }
+  source    = "./modules/acm-certificate"
 
   domain_name      = each.value
   hosted_zone_name = var.validate_certificates ? var.hosted_zone_name : null
 }
 
 module "alias" {
-  for_each = toset(var.create_aliases ? local.domain_names : [])
-  source   = "./modules/alb-route53-alias"
+  for_each  = toset(var.create_aliases ? local.domain_names : [])
+  providers = { aws = aws.route53 }
+  source    = "./modules/alb-route53-alias"
 
   alb              = module.alb.instance
   hosted_zone_name = var.hosted_zone_name
@@ -56,8 +62,9 @@ module "alias" {
 }
 
 module "target_group" {
-  for_each = var.target_groups
-  source   = "./modules/alb-target-group"
+  for_each  = var.target_groups
+  providers = { aws = aws.cluster }
+  source    = "./modules/alb-target-group"
 
   health_check_path = each.value.health_check_path
   health_check_port = each.value.health_check_port

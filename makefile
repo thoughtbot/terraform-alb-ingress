@@ -50,10 +50,12 @@ validate: .validate
 	terraform init -backend=false
 	@touch .init
 
-.validate: .init $(MODULEFILES)
+.validate: .init $(MODULEFILES) test.tf
 	AWS_DEFAULT_REGION=us-east-1 terraform validate
 	@touch .validate
 
+test.tf: $(wildcard *.tf.example)
+	echo | cat - $(wildcard *.tf.example) > test.tf
 .PHONY: modules
 modules: makefiles makemodules
 
