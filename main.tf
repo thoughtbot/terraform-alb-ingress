@@ -66,6 +66,7 @@ module "target_group" {
   providers = { aws = aws.cluster }
   source    = "./modules/alb-target-group"
 
+  enable_stickiness = var.enable_stickiness
   health_check_path = each.value.health_check_path
   health_check_port = each.value.health_check_port
   name              = each.value.name

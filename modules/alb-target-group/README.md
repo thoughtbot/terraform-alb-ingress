@@ -26,6 +26,7 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_enable_stickiness"></a> [enable\_stickiness](#input\_enable\_stickiness) | Set to true to use a cookie for load balancer stickiness | `bool` | `false` | no |
 | <a name="input_health_check_path"></a> [health\_check\_path](#input\_health\_check\_path) | Path for health check | `string` | n/a | yes |
 | <a name="input_health_check_port"></a> [health\_check\_port](#input\_health\_check\_port) | Port for health check | `number` | n/a | yes |
 | <a name="input_name"></a> [name](#input\_name) | Name for this target group | `string` | n/a | yes |

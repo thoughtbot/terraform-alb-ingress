@@ -27,6 +27,12 @@ variable "description" {
   type        = string
 }
 
+variable "enable_stickiness" {
+  type        = bool
+  description = "Set to true to use a cookie for load balancer stickiness"
+  default     = false
+}
+
 variable "failure_threshold" {
   type        = number
   description = "Percentage of failed requests considered an anomaly"

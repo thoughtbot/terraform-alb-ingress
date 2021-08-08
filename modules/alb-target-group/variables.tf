@@ -1,3 +1,9 @@
+variable "enable_stickiness" {
+  type        = bool
+  description = "Set to true to use a cookie for load balancer stickiness"
+  default     = false
+}
+
 variable "health_check_path" {
   description = "Path for health check"
   type        = string

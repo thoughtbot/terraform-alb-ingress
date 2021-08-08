@@ -9,4 +9,9 @@ resource "aws_alb_target_group" "this" {
     path = var.health_check_path
     port = var.health_check_port
   }
+
+  stickiness {
+    type    = "lb_cookie"
+    enabled = var.enable_stickiness
+  }
 }
