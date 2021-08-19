@@ -73,11 +73,20 @@ module "target_group" {
   vpc               = var.vpc
 }
 
+data "aws_lb_target_group" "legacy" {
+  for_each = toset(var.legacy_target_group_names)
+
+  name = each.value
+}
+
 locals {
   domain_names = concat([var.primary_domain_name], var.alternative_domain_names)
 
   target_groups = zipmap(
-    keys(var.target_groups),
-    values(module.target_group).*.instance
+    concat(keys(var.target_groups), keys(data.aws_lb_target_group.legacy)),
+    concat(
+      values(module.target_group).*.instance,
+      values(data.aws_lb_target_group.legacy)
+    )
   )
 }

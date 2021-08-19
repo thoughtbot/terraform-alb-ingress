@@ -51,6 +51,12 @@ variable "issue_certificates" {
   default     = true
 }
 
+variable "legacy_target_group_names" {
+  description = "Names of legacy target groups which should be included"
+  type        = list(string)
+  default     = []
+}
+
 variable "name" {
   description = "Name for this load balancer"
   type        = string
