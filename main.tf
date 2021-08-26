@@ -5,9 +5,9 @@ module "alb" {
   description = var.description
   name        = var.name
   namespace   = var.namespace
-  subnets     = var.subnets
+  subnet_ids  = var.subnet_ids
   tags        = var.tags
-  vpc         = var.vpc
+  vpc_id      = var.vpc_id
 }
 
 module "cloudwatch_alarms" {
@@ -70,7 +70,7 @@ module "target_group" {
   health_check_path = each.value.health_check_path
   health_check_port = each.value.health_check_port
   name              = each.value.name
-  vpc               = var.vpc
+  vpc_id            = var.vpc_id
 }
 
 data "aws_lb_target_group" "legacy" {

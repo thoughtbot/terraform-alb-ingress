@@ -31,7 +31,7 @@ No modules.
 | <a name="input_health_check_port"></a> [health\_check\_port](#input\_health\_check\_port) | Port for health check | `number` | n/a | yes |
 | <a name="input_name"></a> [name](#input\_name) | Name for this target group | `string` | n/a | yes |
 | <a name="input_target_type"></a> [target\_type](#input\_target\_type) | Target group (default: ip) | `string` | `"ip"` | no |
-| <a name="input_vpc"></a> [vpc](#input\_vpc) | VPC for the target group | `object({ id = string })` | n/a | yes |
+| <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | VPC for the target group | `string` | n/a | yes |
 
 ## Outputs
 

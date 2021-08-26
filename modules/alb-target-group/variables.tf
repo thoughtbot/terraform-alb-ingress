@@ -25,7 +25,7 @@ variable "target_type" {
   default     = "ip"
 }
 
-variable "vpc" {
-  type        = object({ id = string })
+variable "vpc_id" {
+  type        = string
   description = "VPC for the target group"
 }

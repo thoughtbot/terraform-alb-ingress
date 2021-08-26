@@ -79,8 +79,8 @@ variable "slow_response_threshold" {
   description = "Response time considered extremely slow"
 }
 
-variable "subnets" {
-  type        = map(object({ id = string }))
+variable "subnet_ids" {
+  type        = list(string)
   description = "Subnets for this load balancer"
 }
 
@@ -112,7 +112,7 @@ variable "validate_certificates" {
   default     = true
 }
 
-variable "vpc" {
-  type        = object({ id = string })
+variable "vpc_id" {
+  type        = string
   description = "VPC for the ALB"
 }

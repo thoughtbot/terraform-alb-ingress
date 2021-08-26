@@ -25,8 +25,8 @@ module "ingress" {
   hosted_zone_name         = "example.com"
   name                     = "example-ingress"
   primary_domain_name      = "www.example.com"
-  subnets                  = data.aws_subnet.public
-  vpc                      = data.aws_vpc.example
+  subnet_ids               = data.aws_subnet_ids.public.ids
+  vpc_id                   = data.aws_vpc.example.id
 
   target_groups = {
     canary = {
@@ -98,12 +98,12 @@ module "ingress" {
 | <a name="input_namespace"></a> [namespace](#input\_namespace) | Prefix to apply to created resources | `list(string)` | `[]` | no |
 | <a name="input_primary_domain_name"></a> [primary\_domain\_name](#input\_primary\_domain\_name) | Primary domain name for the ALB | `string` | n/a | yes |
 | <a name="input_slow_response_threshold"></a> [slow\_response\_threshold](#input\_slow\_response\_threshold) | Response time considered extremely slow | `number` | `10` | no |
-| <a name="input_subnets"></a> [subnets](#input\_subnets) | Subnets for this load balancer | `map(object({ id = string }))` | n/a | yes |
+| <a name="input_subnet_ids"></a> [subnet\_ids](#input\_subnet\_ids) | Subnets for this load balancer | `list(string)` | n/a | yes |
 | <a name="input_tags"></a> [tags](#input\_tags) | Tags to apply to created resources | `map(string)` | `{}` | no |
 | <a name="input_target_group_weights"></a> [target\_group\_weights](#input\_target\_group\_weights) | Weight for each target group (defaults to 100) | `map(number)` | `{}` | no |
 | <a name="input_target_groups"></a> [target\_groups](#input\_target\_groups) | Target groups to which this rule should forward | <pre>map(object({<br>    health_check_path = string,<br>    health_check_port = number,<br>    name              = string<br>  }))</pre> | n/a | yes |
 | <a name="input_validate_certificates"></a> [validate\_certificates](#input\_validate\_certificates) | Set to false to disable validation via Route 53 | `bool` | `true` | no |
-| <a name="input_vpc"></a> [vpc](#input\_vpc) | VPC for the ALB | `object({ id = string })` | n/a | yes |
+| <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | VPC for the ALB | `string` | n/a | yes |
 
 ## Outputs
 

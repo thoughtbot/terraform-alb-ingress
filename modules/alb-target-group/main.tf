@@ -3,7 +3,7 @@ resource "aws_alb_target_group" "this" {
   port        = 443
   protocol    = "HTTPS"
   target_type = var.target_type
-  vpc_id      = var.vpc.id
+  vpc_id      = var.vpc_id
 
   health_check {
     path = var.health_check_path
