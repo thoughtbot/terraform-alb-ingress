@@ -1,0 +1,13 @@
+formatter: markdown
+
+output:
+  file: README.md
+  mode: inject
+
+recursive:
+  enabled: true
+  path: modules
+
+settings:
+  # Avoid reading locked version from running validate
+  lockfile: false

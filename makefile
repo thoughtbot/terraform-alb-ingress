@@ -4,10 +4,11 @@ export TF_CLI_CONFIG_FILE := $(CURDIR)/.terraformrc
 
 SUBMODULES         := $(wildcard modules/*)
 SUBMODULEMAKEFILES := $(foreach module,$(SUBMODULES),$(module)/makefile)
-MAKESUBMODULES     := $(foreach module,$(SUBMODULES),$(module)/default)
+MAKESUBMODULES     := $(foreach module,$(SUBMODULES),$(module)/make)
 CLEANSUBMODULES    := $(foreach module,$(SUBMODULES),$(module)/clean)
 TFLINTRC           := ./.tflint.hcl
 MODULEFILES        := $(wildcard *.tf)
+SUBMODULESCOMMAND  ?= default
 
 .PHONY: default
 default: modules
@@ -56,8 +57,9 @@ validate: .validate
 
 test.tf: $(wildcard *.tf.example)
 	echo | cat - $(wildcard *.tf.example) > test.tf
+
 .PHONY: modules
-modules: makefiles makemodules
+modules: makefiles submodules checkfmt validate docs lint
 
 .PHONY: makefiles
 makefiles: $(SUBMODULEMAKEFILES)
@@ -65,11 +67,11 @@ makefiles: $(SUBMODULEMAKEFILES)
 $(SUBMODULEMAKEFILES): %/makefile: makefiles/terraform.mk
 	cp "$<" "$@"
 
-.PHONY: makemodules
-makemodules: $(MAKESUBMODULES) checkfmt validate docs lint
+.PHONY: submodules
+submodules: $(MAKESUBMODULES)
 
-$(MAKESUBMODULES): %/default: .terraformrc
-	$(MAKE) -C "$*"
+$(MAKESUBMODULES): %/make: .terraformrc
+	$(MAKE) -C "$*" "$(SUBMODULESCOMMAND)"
 
 $(CLEANSUBMODULES): %/clean:
 	$(MAKE) -C "$*" clean
@@ -81,3 +83,7 @@ clean: $(CLEANSUBMODULES)
 .terraformrc:
 	mkdir -p .terraform-plugins
 	echo 'plugin_cache_dir = "$(CURDIR)/.terraform-plugins"' > .terraformrc
+
+all/%:
+	$(MAKE) submodules SUBMODULESCOMMAND=$(*)
+	$(MAKE) $(*)

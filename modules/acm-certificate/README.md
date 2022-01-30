@@ -10,8 +10,8 @@
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws.certificate"></a> [aws.certificate](#provider\_aws.certificate) | 3.52.0 |
-| <a name="provider_aws.route53"></a> [aws.route53](#provider\_aws.route53) | 3.52.0 |
+| <a name="provider_aws.certificate"></a> [aws.certificate](#provider\_aws.certificate) | ~> 3.45 |
+| <a name="provider_aws.route53"></a> [aws.route53](#provider\_aws.route53) | ~> 3.45 |
 
 ## Modules
 
