@@ -9,9 +9,9 @@ variable "alternative_domain_names" {
   description = "Alternative domain names for the ALB"
 }
 
-variable "primary_domain_name" {
+variable "certificate_domain_name" {
   type        = string
-  description = "Primary domain name for the ALB"
+  description = "Domain name for which an ACM certificate can be found"
 }
 
 variable "target_groups" {

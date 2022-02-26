@@ -35,7 +35,7 @@ module "https" {
 
   alb                      = module.alb.instance
   alternative_domain_names = var.alternative_domain_names
-  primary_domain_name      = var.primary_domain_name
+  certificate_domain_name  = local.certificate_domain_name
   target_groups            = local.target_groups
   target_group_weights     = var.target_group_weights
 
@@ -80,6 +80,11 @@ data "aws_lb_target_group" "legacy" {
 }
 
 locals {
+  certificate_domain_name = coalesce(
+    var.certificate_domain_name,
+    var.primary_domain_name
+  )
+
   domain_names = concat([var.primary_domain_name], var.alternative_domain_names)
 
   target_groups = zipmap(

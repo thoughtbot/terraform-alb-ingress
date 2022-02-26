@@ -16,6 +16,12 @@ variable "alternative_domain_names" {
   description = "Alternative domain names for the ALB"
 }
 
+variable "certificate_domain_name" {
+  type        = string
+  default     = null
+  description = "Override the domain name for the ACM certificate (defaults to primary domain)"
+}
+
 variable "create_aliases" {
   description = "Set to false to disable creation of Route 53 aliases"
   type        = bool

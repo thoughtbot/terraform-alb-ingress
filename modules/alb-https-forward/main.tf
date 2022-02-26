@@ -45,7 +45,7 @@ resource "aws_alb_listener_certificate" "this" {
 }
 
 data "aws_acm_certificate" "acm_certificate" {
-  domain      = var.primary_domain_name
+  domain      = var.certificate_domain_name
   most_recent = true
   statuses    = ["ISSUED"]
 }
