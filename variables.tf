@@ -1,3 +1,9 @@
+variable "additional_hosted_zones" {
+  description = "Override the hosted zone for a particular domain"
+  type        = map(string)
+  default     = {}
+}
+
 variable "alarm_actions" {
   type        = list(object({ arn = string }))
   description = "SNS topics or other actions to invoke for alarms"

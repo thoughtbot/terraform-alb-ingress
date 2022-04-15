@@ -48,6 +48,37 @@ module "ingress" {
 }
 ```
 
+By default, the module will attempt to create Route 53 aliases and ACM
+certificates for all domain names in the provided hosted zone. You can customize
+this behavior using the following options:
+
+``` terraform
+module "ingress" {
+  source = "..."
+
+  # The domain name for the primary certificate on the HTTPS listener.
+  primary_domain_name      = "www.example.com"
+
+  # The name of the hosted zone where records for the primary domain is set.
+  hosted_zone_name         = "example.com"
+
+  # Other domain names to add as aliases for the load balancer.
+  alternate_domain_names   = ["example.com", "api.example.com"]
+
+  # Disable creation of Route 53 records for aliases.
+  create_aliases = false
+
+  # Disable issuing of certificates entirely.
+  issue_certificates = false
+
+  # If you have multiple DNS hosted zones, you can set the hosted zone name for
+  # each domain name:
+  additional_hosted_zones = {
+    "api.example.com" = "api.example.com"
+  }
+}
+```
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 
@@ -84,6 +115,7 @@ module "ingress" {
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_additional_hosted_zones"></a> [additional\_hosted\_zones](#input\_additional\_hosted\_zones) | Override the hosted zone for a particular domain | `map(string)` | `{}` | no |
 | <a name="input_alarm_actions"></a> [alarm\_actions](#input\_alarm\_actions) | SNS topics or other actions to invoke for alarms | `list(object({ arn = string }))` | `[]` | no |
 | <a name="input_alarm_evaluation_minutes"></a> [alarm\_evaluation\_minutes](#input\_alarm\_evaluation\_minutes) | Number of minutes of alarm state until triggering an alarm | `number` | `2` | no |
 | <a name="input_allow_overwrite"></a> [allow\_overwrite](#input\_allow\_overwrite) | Allow overwriting of existing DNS records | `bool` | `false` | no |
