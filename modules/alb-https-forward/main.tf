@@ -53,6 +53,7 @@ data "aws_acm_certificate" "acm_certificate" {
 data "aws_acm_certificate" "alternatives" {
   for_each = toset(var.alternative_domain_names)
 
-  domain   = each.value
-  statuses = ["ISSUED"]
+  domain      = each.value
+  most_recent = true
+  statuses    = ["ISSUED"]
 }
