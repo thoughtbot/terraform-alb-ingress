@@ -10,6 +10,12 @@ variable "alarm_evaluation_minutes" {
   description = "Number of minutes of alarm state until triggering an alarm"
 }
 
+variable "allow_overwrite" {
+  type        = bool
+  default     = false
+  description = "Allow overwriting of existing DNS records"
+}
+
 variable "alternative_domain_names" {
   type        = list(string)
   default     = []

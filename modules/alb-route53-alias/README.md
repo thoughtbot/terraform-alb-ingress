@@ -28,6 +28,7 @@ No modules.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_alb"></a> [alb](#input\_alb) | ALB for which an alias should be created | `object({ dns_name = string, zone_id = string })` | n/a | yes |
+| <a name="input_allow_overwrite"></a> [allow\_overwrite](#input\_allow\_overwrite) | Allow overwriting of existing DNS records | `bool` | `false` | no |
 | <a name="input_hosted_zone_name"></a> [hosted\_zone\_name](#input\_hosted\_zone\_name) | Hosted zone for AWS Route53 | `string` | `null` | no |
 | <a name="input_name"></a> [name](#input\_name) | Name of the Route 53 alias (example: www) | `string` | n/a | yes |
 

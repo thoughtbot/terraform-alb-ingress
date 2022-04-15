@@ -1,3 +1,9 @@
+variable "allow_overwrite" {
+  type        = bool
+  default     = false
+  description = "Allow overwriting of existing DNS records"
+}
+
 variable "alternative_names" {
   type        = list(string)
   description = "Other domains which should be included in the certificate"

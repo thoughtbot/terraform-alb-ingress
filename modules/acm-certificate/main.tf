@@ -28,11 +28,12 @@ resource "aws_route53_record" "validation" {
 
   count = var.hosted_zone_name == null ? 0 : 1
 
-  name    = local.domain_validation_options[0].resource_record_name
-  records = [local.domain_validation_options[0].resource_record_value]
-  ttl     = 3600
-  type    = local.domain_validation_options[0].resource_record_type
-  zone_id = join("", data.aws_route53_zone.this.*.zone_id)
+  allow_overwrite = var.allow_overwrite
+  name            = local.domain_validation_options[0].resource_record_name
+  records         = [local.domain_validation_options[0].resource_record_value]
+  ttl             = 3600
+  type            = local.domain_validation_options[0].resource_record_type
+  zone_id         = join("", data.aws_route53_zone.this.*.zone_id)
 }
 
 resource "aws_route53_record" "alternative_validation" {
@@ -40,11 +41,12 @@ resource "aws_route53_record" "alternative_validation" {
 
   count = var.hosted_zone_name == null ? 0 : length(var.alternative_names)
 
-  name    = local.domain_validation_options[count.index].resource_record_name
-  records = [local.domain_validation_options[count.index].resource_record_value]
-  ttl     = 3600
-  type    = local.domain_validation_options[count.index].resource_record_type
-  zone_id = join("", data.aws_route53_zone.this.*.zone_id)
+  allow_overwrite = var.allow_overwrite
+  name            = local.domain_validation_options[count.index].resource_record_name
+  records         = [local.domain_validation_options[count.index].resource_record_value]
+  ttl             = 3600
+  type            = local.domain_validation_options[count.index].resource_record_type
+  zone_id         = join("", data.aws_route53_zone.this.*.zone_id)
 }
 
 resource "aws_acm_certificate_validation" "this" {

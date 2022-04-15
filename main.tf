@@ -47,6 +47,7 @@ module "acm_certificate" {
   providers = { aws.certificate = aws.cluster, aws.route53 = aws.route53 }
   source    = "./modules/acm-certificate"
 
+  allow_overwrite  = var.allow_overwrite
   domain_name      = each.value
   hosted_zone_name = var.validate_certificates ? var.hosted_zone_name : null
 }
@@ -57,6 +58,7 @@ module "alias" {
   source    = "./modules/alb-route53-alias"
 
   alb              = module.alb.instance
+  allow_overwrite  = var.allow_overwrite
   hosted_zone_name = var.hosted_zone_name
   name             = each.value
 }

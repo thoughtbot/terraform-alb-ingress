@@ -31,6 +31,7 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_allow_overwrite"></a> [allow\_overwrite](#input\_allow\_overwrite) | Allow overwriting of existing DNS records | `bool` | `false` | no |
 | <a name="input_alternative_names"></a> [alternative\_names](#input\_alternative\_names) | Other domains which should be included in the certificate | `list(string)` | `[]` | no |
 | <a name="input_domain_name"></a> [domain\_name](#input\_domain\_name) | Domain for which an SSL certificate should be created | `string` | n/a | yes |
 | <a name="input_hosted_zone_name"></a> [hosted\_zone\_name](#input\_hosted\_zone\_name) | Zone for AWS Route53 for verifying certificates | `string` | `null` | no |
