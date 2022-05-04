@@ -34,6 +34,12 @@ variable "certificate_domain_name" {
   description = "Override the domain name for the ACM certificate (defaults to primary domain)"
 }
 
+variable "certificate_types" {
+  type        = list(string)
+  description = "Types of certificates to look for (default: AMAZON_ISSUED)"
+  default     = ["AMAZON_ISSUED"]
+}
+
 variable "create_aliases" {
   description = "Set to false to disable creation of Route 53 aliases"
   type        = bool

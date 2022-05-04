@@ -48,6 +48,7 @@ data "aws_acm_certificate" "acm_certificate" {
   domain      = var.certificate_domain_name
   most_recent = true
   statuses    = ["ISSUED"]
+  types       = var.certificate_types
 }
 
 data "aws_acm_certificate" "alternatives" {
@@ -56,4 +57,5 @@ data "aws_acm_certificate" "alternatives" {
   domain      = each.value
   most_recent = true
   statuses    = ["ISSUED"]
+  types       = var.certificate_types
 }

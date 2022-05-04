@@ -14,6 +14,12 @@ variable "certificate_domain_name" {
   description = "Domain name for which an ACM certificate can be found"
 }
 
+variable "certificate_types" {
+  type        = list(string)
+  description = "Types of certificates to look for (default: AMAZON_ISSUED)"
+  default     = ["AMAZON_ISSUED"]
+}
+
 variable "target_groups" {
   description = "The target groups to which this listener should forward"
   type        = map(object({ arn = string }))

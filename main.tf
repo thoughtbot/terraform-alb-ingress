@@ -36,6 +36,7 @@ module "https" {
   alb                      = module.alb.instance
   alternative_domain_names = var.alternative_domain_names
   certificate_domain_name  = local.certificate_domain_name
+  certificate_types        = var.certificate_types
   target_groups            = local.target_groups
   target_group_weights     = var.target_group_weights
 
