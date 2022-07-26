@@ -5,7 +5,7 @@ terraform {
     aws = {
       configuration_aliases = [aws.cluster, aws.route53]
       source                = "hashicorp/aws"
-      version               = "~> 3.45"
+      version               = "~> 4.0"
     }
   }
 }
