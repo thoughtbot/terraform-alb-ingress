@@ -17,7 +17,7 @@ Major features:
 
 ``` terraform
 module "ingress" {
-  source = "git@github.com:thoughtbot/terraform-alb-ingress.git?ref=v0.1.0"
+  source = "git@github.com:thoughtbot/terraform-alb-ingress.git?ref=v0.5.0"
 
   alarm_actions            = [data.aws_sns_topic.cloudwatch_alarms]
   alternate_domain_names   = ["example.com", "api.example.com"]
