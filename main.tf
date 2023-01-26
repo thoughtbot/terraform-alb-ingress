@@ -34,7 +34,7 @@ module "https" {
   source    = "./modules/alb-https-forward"
 
   alb                      = module.alb.instance
-  alternative_domain_names = var.alternative_domain_names
+  alternative_domain_names = var.issue_certificates ? var.alternative_domain_names : []
   certificate_domain_name  = local.certificate_domain_name
   certificate_types        = var.certificate_types
   target_groups            = local.target_groups
