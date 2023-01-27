@@ -10,6 +10,11 @@ resource "aws_security_group" "this" {
   name        = join("-", concat(var.namespace, [var.name]))
   tags        = var.tags
   vpc_id      = var.vpc_id
+
+  lifecycle {
+    # You can't remove the last security group
+    create_before_destroy = true
+  }
 }
 
 resource "aws_security_group_rule" "aws_alb_http_ingress" {
