@@ -86,15 +86,15 @@ variable "name" {
   type        = string
 }
 
-variable "namespace" {
-  description = "Prefix to apply to created resources"
-  type        = list(string)
-  default     = []
-}
-
 variable "primary_domain_name" {
   type        = string
   description = "Primary domain name for the ALB"
+}
+
+variable "security_group_name" {
+  type        = string
+  description = "Name for the load balancer security group; defaults to name"
+  default     = null
 }
 
 variable "slow_response_threshold" {

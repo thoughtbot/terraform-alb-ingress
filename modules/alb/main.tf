@@ -1,5 +1,5 @@
 resource "aws_alb" "this" {
-  name            = join("-", concat(var.namespace, [var.name]))
+  name            = var.name
   security_groups = [aws_security_group.this.id]
   subnets         = var.subnet_ids
   tags            = var.tags
@@ -7,7 +7,7 @@ resource "aws_alb" "this" {
 
 resource "aws_security_group" "this" {
   description = var.description
-  name        = join("-", concat(var.namespace, [var.name]))
+  name        = coalesce(var.security_group_name, var.name)
   tags        = var.tags
   vpc_id      = var.vpc_id
 
