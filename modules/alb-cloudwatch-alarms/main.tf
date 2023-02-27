@@ -26,8 +26,8 @@ resource "aws_cloudwatch_metric_alarm" "response_time" {
     }
   }
 
-  alarm_actions = var.alarm_actions.*.arn
-  ok_actions    = var.alarm_actions.*.arn
+  alarm_actions = var.alarm_actions[*].arn
+  ok_actions    = var.alarm_actions[*].arn
 }
 
 resource "aws_cloudwatch_metric_alarm" "error_responses" {
@@ -154,8 +154,8 @@ resource "aws_cloudwatch_metric_alarm" "failure_ratio" {
     }
   }
 
-  alarm_actions = var.alarm_actions.*.arn
-  ok_actions    = var.alarm_actions.*.arn
+  alarm_actions = var.alarm_actions[*].arn
+  ok_actions    = var.alarm_actions[*].arn
 }
 
 locals {

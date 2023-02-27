@@ -33,7 +33,7 @@ resource "aws_route53_record" "validation" {
   records         = [local.domain_validation_options[0].resource_record_value]
   ttl             = 3600
   type            = local.domain_validation_options[0].resource_record_type
-  zone_id         = join("", data.aws_route53_zone.this.*.zone_id)
+  zone_id         = join("", data.aws_route53_zone.this[*].zone_id)
 }
 
 resource "aws_route53_record" "alternative_validation" {
@@ -46,7 +46,7 @@ resource "aws_route53_record" "alternative_validation" {
   records         = [local.domain_validation_options[count.index + 1].resource_record_value]
   ttl             = 3600
   type            = local.domain_validation_options[count.index + 1].resource_record_type
-  zone_id         = join("", data.aws_route53_zone.this.*.zone_id)
+  zone_id         = join("", data.aws_route53_zone.this[*].zone_id)
 }
 
 resource "aws_acm_certificate_validation" "this" {
@@ -55,8 +55,8 @@ resource "aws_acm_certificate_validation" "this" {
   certificate_arn = aws_acm_certificate.this.arn
 
   validation_record_fqdns = concat(
-    aws_route53_record.validation.*.fqdn,
-    aws_route53_record.alternative_validation.*.fqdn
+    aws_route53_record.validation[*].fqdn,
+    aws_route53_record.alternative_validation[*].fqdn
   )
 }
 
