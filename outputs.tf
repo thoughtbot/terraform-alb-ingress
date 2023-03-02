@@ -1,3 +1,8 @@
+output "dns_name" {
+  description = "DNS name of the created application load balancer"
+  value       = module.alb.dns_name
+}
+
 output "instance" {
   description = "The load balancer"
   value       = module.alb.instance
@@ -16,4 +21,9 @@ output "http_listener" {
 output "https_listener" {
   description = "The HTTPS listener"
   value       = module.https.instance
+}
+
+output "zone_id" {
+  description = "Route53 zone of the created application load balancer"
+  value       = module.alb.zone_id
 }

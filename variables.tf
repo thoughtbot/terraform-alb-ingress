@@ -1,9 +1,3 @@
-variable "additional_hosted_zones" {
-  description = "Override the hosted zone for a particular domain"
-  type        = map(string)
-  default     = {}
-}
-
 variable "alarm_actions" {
   type        = list(object({ arn = string }))
   description = "SNS topics or other actions to invoke for alarms"
@@ -22,16 +16,10 @@ variable "allow_overwrite" {
   description = "Allow overwriting of existing DNS records"
 }
 
-variable "alternative_domain_names" {
+variable "attach_certificate_domains" {
+  description = "Additional existing certificates which should be attached"
   type        = list(string)
   default     = []
-  description = "Alternative domain names for the ALB"
-}
-
-variable "certificate_domain_name" {
-  type        = string
-  default     = null
-  description = "Override the domain name for the ACM certificate (defaults to primary domain)"
 }
 
 variable "certificate_types" {
@@ -40,10 +28,9 @@ variable "certificate_types" {
   default     = ["AMAZON_ISSUED"]
 }
 
-variable "create_aliases" {
-  description = "Set to false to disable creation of Route 53 aliases"
-  type        = bool
-  default     = true
+variable "create_domain_aliases" {
+  description = "List of domains for which alias records should be created"
+  type        = list(string)
 }
 
 variable "description" {
@@ -69,10 +56,10 @@ variable "hosted_zone_name" {
   default     = null
 }
 
-variable "issue_certificates" {
-  description = "Set to false to disable creation of ACM certificates"
-  type        = bool
-  default     = true
+variable "issue_certificate_domains" {
+  description = "List of domains for which certificates should be issued"
+  type        = list(string)
+  default     = []
 }
 
 variable "legacy_target_group_names" {
@@ -86,9 +73,9 @@ variable "name" {
   type        = string
 }
 
-variable "primary_domain_name" {
+variable "primary_certificate_domain" {
+  description = "Primary domain name for the load balancer certificate"
   type        = string
-  description = "Primary domain name for the ALB"
 }
 
 variable "security_group_name" {

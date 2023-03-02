@@ -8,8 +8,8 @@ resource "aws_route53_record" "load_balancer" {
 
   alias {
     evaluate_target_health = true
-    name                   = var.alb.dns_name
-    zone_id                = var.alb.zone_id
+    name                   = var.alb_dns_name
+    zone_id                = var.alb_zone_id
   }
 }
 

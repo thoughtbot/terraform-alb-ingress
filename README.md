@@ -12,22 +12,43 @@ Major features:
 * Create ACM certificates for SSL
 * Validate ACM certificates using Route 53
 * Create sensible Cloudwatch alarms for monitoring traffic
+* Support multi-account configurations
+* Support externally created certificates when not using Route 53
 
 ## Example
 
 ``` terraform
 module "ingress" {
-  source = "git@github.com:thoughtbot/terraform-alb-ingress.git?ref=v0.5.0"
+  source = "git@github.com:thoughtbot/terraform-alb-ingress.git?ref=EXAMPLE"
 
-  alarm_actions            = [data.aws_sns_topic.cloudwatch_alarms]
-  alternate_domain_names   = ["example.com", "api.example.com"]
+  # Basic attributes
   description              = "My example application"
-  hosted_zone_name         = "example.com"
   name                     = "example-ingress"
-  primary_domain_name      = "www.example.com"
-  subnet_ids               = data.aws_subnet_ids.public.ids
-  vpc_id                   = data.aws_vpc.example.id
 
+  # Choose the domain name of the primary certificate of the HTTPS listener
+  primary_certificate_domain  = "www.example.com"
+
+  # Create and validate ACM certificates
+  issue_certificate_domains = ["www.example.com", "beta.example.com"]
+  validate_certificates     = true
+
+  # Attach ACM certificates created outside the module
+  attach_certificate_domains = ["example.com"]
+
+  # Create aliases
+  create_domain_aliases = ["www.example.com", "beta.example.com"]
+
+  # Choose a Route 53 zone for aliases and certificate validation
+  hosted_zone_name = "example.com"
+
+  # Choose what should happen from CloudWatch alarms
+  alarm_actions = [data.aws_sns_topic.cloudwatch_alarms]
+
+  # Network configuration
+  subnet_ids = data.aws_subnet_ids.public.ids
+  vpc_id     = data.aws_vpc.example.id
+
+  # Target group configuration
   target_groups = {
     canary = {
       health_check_path = "/healthz"
@@ -48,34 +69,110 @@ module "ingress" {
 }
 ```
 
-By default, the module will attempt to create Route 53 aliases and ACM
-certificates for all domain names in the provided hosted zone. You can customize
-this behavior using the following options:
+## Multi-account Example
+
+The primary module can issue ACM certificates, perform Route 53 ACM certificate
+validation, and create Route 53 aliases for a single hosted zone. If you have
+multiple hosted zones or multiple accounts, you can combine the main module with
+one or more submodules. For example, if you have `example.com` as a hosted zone
+in your network account and `production.example.com` as a hosted zone in your
+production account:
+
+``` terraform
+module "root_certificate" {
+  source    = "github.com/thoughtbot/terraform-alb-ingress//modules/acm-certificate?ref=EXAMPLE"
+
+  providers = {
+    # AWS provider configuration for the production account. Must match the ALB.
+    aws.certificate = aws.production,
+
+    # AWS provider configuration for the network account.
+    aws.route53 = aws.network
+  }
+
+  domain_name      = "example.com"
+  hosted_zone_name = "example.com"
+}
+
+module "www_certificate" {
+  providers = { aws.certificate = aws.production, aws.route53 = aws.network }
+  source    = "github.com/thoughtbot/terraform-alb-ingress//modules/acm-certificate?ref=EXAMPLE"
+
+  domain_name      = "www.example.com"
+  hosted_zone_name = "example.com"
+}
+
+module "ingress" {
+  providers = { aws.alb = aws.production, aws.route53 = aws.production }
+  source    = "github.com/thoughtbot/terraform-alb-ingress?ref=EXAMPLE"
+
+  # The domain name for the primary certificate on the HTTPS listener.
+  primary_certificate_domain = "production.example.com"
+
+  # Certificates managed by this module
+  issue_certificate_domains = ["production.example.com"]
+
+  # Externally created certificates
+  attach_certificate_domains = ["example.com", "www.example.com"]
+
+  # The name of the hosted zone where records for the ALB can be managed
+  hosted_zone_name = "production.example.com"
+
+  # Aliases which can be created in the primary hosted zone
+  create_domain_aliases = ["production.example.com"]
+
+  depends_on = [module.root_certificate, module.www_certificate]
+}
+
+module "root_alias" {
+  source    = "github.com/thoughtbot/terraform-alb-ingress//modules/alb-route53-alias?ref=EXAMPLE"
+
+  providers = {
+    # AWS provider configuration for the production account. Must match the ALB.
+    aws.certificate = aws.production,
+
+    # AWS provider configuration for the network account.
+    aws.route53 = aws.network
+  }
+
+  alb_dns_name     = module.ingress.alb_dns_name
+  alb_zone_id      = module.ingress.alb_zone_id
+  name             = "example.com"
+  hosted_zone_name = "example.com"
+}
+
+module "www_alias" {
+  providers = { aws.certificate = aws.production, aws.route53 = aws.network }
+  source    = "github.com/thoughtbot/terraform-alb-ingress//modules/alb-route53-alias?ref=EXAMPLE"
+
+  alb_dns_name     = module.ingress.alb_dns_name
+  alb_zone_id      = module.ingress.alb_zone_id
+  name             = "www.example.com"
+  hosted_zone_name = "example.com"
+}
+```
+
+## Non-Route 53 Example
+
+If you aren't using Route 53 as a DNS provider, you can issue certificates on
+your own and disable creation of aliases.
 
 ``` terraform
 module "ingress" {
-  source = "..."
+  providers = { aws.alb = aws, aws.route53 = aws }
+  source    = "github.com/thoughtbot/terraform-alb-ingress?ref=EXAMPLE"
 
   # The domain name for the primary certificate on the HTTPS listener.
-  primary_domain_name      = "www.example.com"
+  primary_certificate_domain = "example.com"
 
-  # The name of the hosted zone where records for the primary domain is set.
-  hosted_zone_name         = "example.com"
+  # Don't issue any certificates
+  issue_certificate_domains = []
 
-  # Other domain names to add as aliases for the load balancer.
-  alternate_domain_names   = ["example.com", "api.example.com"]
+  # Externally created certificates
+  attach_certificate_domains = ["example.com", "www.example.com"]
 
-  # Disable creation of Route 53 records for aliases.
-  create_aliases = false
-
-  # Disable issuing of certificates entirely.
-  issue_certificates = false
-
-  # If you have multiple DNS hosted zones, you can set the hosted zone name for
-  # each domain name:
-  additional_hosted_zones = {
-    "api.example.com" = "api.example.com"
-  }
+  # Don't create aliases
+  create_domain_aliases = ["production.example.com"]
 }
 ```
 
@@ -115,22 +212,20 @@ module "ingress" {
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_additional_hosted_zones"></a> [additional\_hosted\_zones](#input\_additional\_hosted\_zones) | Override the hosted zone for a particular domain | `map(string)` | `{}` | no |
 | <a name="input_alarm_actions"></a> [alarm\_actions](#input\_alarm\_actions) | SNS topics or other actions to invoke for alarms | `list(object({ arn = string }))` | `[]` | no |
 | <a name="input_alarm_evaluation_minutes"></a> [alarm\_evaluation\_minutes](#input\_alarm\_evaluation\_minutes) | Number of minutes of alarm state until triggering an alarm | `number` | `2` | no |
 | <a name="input_allow_overwrite"></a> [allow\_overwrite](#input\_allow\_overwrite) | Allow overwriting of existing DNS records | `bool` | `false` | no |
-| <a name="input_alternative_domain_names"></a> [alternative\_domain\_names](#input\_alternative\_domain\_names) | Alternative domain names for the ALB | `list(string)` | `[]` | no |
-| <a name="input_certificate_domain_name"></a> [certificate\_domain\_name](#input\_certificate\_domain\_name) | Override the domain name for the ACM certificate (defaults to primary domain) | `string` | `null` | no |
+| <a name="input_attach_certificate_domains"></a> [attach\_certificate\_domains](#input\_attach\_certificate\_domains) | Additional existing certificates which should be attached | `list(string)` | `[]` | no |
 | <a name="input_certificate_types"></a> [certificate\_types](#input\_certificate\_types) | Types of certificates to look for (default: AMAZON\_ISSUED) | `list(string)` | <pre>[<br>  "AMAZON_ISSUED"<br>]</pre> | no |
-| <a name="input_create_aliases"></a> [create\_aliases](#input\_create\_aliases) | Set to false to disable creation of Route 53 aliases | `bool` | `true` | no |
+| <a name="input_create_domain_aliases"></a> [create\_domain\_aliases](#input\_create\_domain\_aliases) | List of domains for which alias records should be created | `list(string)` | n/a | yes |
 | <a name="input_description"></a> [description](#input\_description) | Human description for this load balancer | `string` | n/a | yes |
 | <a name="input_enable_stickiness"></a> [enable\_stickiness](#input\_enable\_stickiness) | Set to true to use a cookie for load balancer stickiness | `bool` | `false` | no |
 | <a name="input_failure_threshold"></a> [failure\_threshold](#input\_failure\_threshold) | Percentage of failed requests considered an anomaly | `number` | `5` | no |
 | <a name="input_hosted_zone_name"></a> [hosted\_zone\_name](#input\_hosted\_zone\_name) | Hosted zone for AWS Route53 | `string` | `null` | no |
-| <a name="input_issue_certificates"></a> [issue\_certificates](#input\_issue\_certificates) | Set to false to disable creation of ACM certificates | `bool` | `true` | no |
+| <a name="input_issue_certificate_domains"></a> [issue\_certificate\_domains](#input\_issue\_certificate\_domains) | List of domains for which certificates should be issued | `list(string)` | `[]` | no |
 | <a name="input_legacy_target_group_names"></a> [legacy\_target\_group\_names](#input\_legacy\_target\_group\_names) | Names of legacy target groups which should be included | `list(string)` | `[]` | no |
 | <a name="input_name"></a> [name](#input\_name) | Name for this load balancer | `string` | n/a | yes |
-| <a name="input_primary_domain_name"></a> [primary\_domain\_name](#input\_primary\_domain\_name) | Primary domain name for the ALB | `string` | n/a | yes |
+| <a name="input_primary_certificate_domain"></a> [primary\_certificate\_domain](#input\_primary\_certificate\_domain) | Primary domain name for the load balancer certificate | `string` | n/a | yes |
 | <a name="input_security_group_name"></a> [security\_group\_name](#input\_security\_group\_name) | Name for the load balancer security group; defaults to name | `string` | `null` | no |
 | <a name="input_slow_response_threshold"></a> [slow\_response\_threshold](#input\_slow\_response\_threshold) | Response time considered extremely slow | `number` | `10` | no |
 | <a name="input_subnet_ids"></a> [subnet\_ids](#input\_subnet\_ids) | Subnets for this load balancer | `list(string)` | n/a | yes |
@@ -144,8 +239,10 @@ module "ingress" {
 
 | Name | Description |
 |------|-------------|
+| <a name="output_dns_name"></a> [dns\_name](#output\_dns\_name) | DNS name of the created application load balancer |
 | <a name="output_http_listener"></a> [http\_listener](#output\_http\_listener) | The HTTP listener |
 | <a name="output_https_listener"></a> [https\_listener](#output\_https\_listener) | The HTTPS listener |
 | <a name="output_instance"></a> [instance](#output\_instance) | The load balancer |
 | <a name="output_security_group"></a> [security\_group](#output\_security\_group) | Security group for the load balancer |
+| <a name="output_zone_id"></a> [zone\_id](#output\_zone\_id) | Route53 zone of the created application load balancer |
 <!-- END_TF_DOCS -->

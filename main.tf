@@ -1,5 +1,5 @@
 module "alb" {
-  providers = { aws = aws.cluster }
+  providers = { aws = aws.alb }
   source    = "./modules/alb"
 
   description         = var.description
@@ -11,7 +11,7 @@ module "alb" {
 }
 
 module "cloudwatch_alarms" {
-  providers = { aws = aws.cluster }
+  providers = { aws = aws.alb }
   source    = "./modules/alb-cloudwatch-alarms"
 
   alarm_actions            = var.alarm_actions
@@ -23,19 +23,19 @@ module "cloudwatch_alarms" {
 }
 
 module "http" {
-  providers = { aws = aws.cluster }
+  providers = { aws = aws.alb }
   source    = "./modules/alb-http-redirect"
 
   alb = module.alb.instance
 }
 
 module "https" {
-  providers = { aws = aws.cluster }
+  providers = { aws = aws.alb }
   source    = "./modules/alb-https-forward"
 
   alb                      = module.alb.instance
-  alternative_domain_names = var.alternative_domain_names
-  certificate_domain_name  = local.certificate_domain_name
+  alternative_domain_names = local.alternative_certificate_domains
+  certificate_domain_name  = var.primary_certificate_domain
   certificate_types        = var.certificate_types
   target_groups            = local.target_groups
   target_group_weights     = var.target_group_weights
@@ -44,38 +44,30 @@ module "https" {
 }
 
 module "acm_certificate" {
-  for_each  = toset(var.issue_certificates ? local.domain_names : [])
-  providers = { aws.certificate = aws.cluster, aws.route53 = aws.route53 }
+  for_each  = toset(var.issue_certificate_domains)
+  providers = { aws.certificate = aws.alb, aws.route53 = aws.route53 }
   source    = "./modules/acm-certificate"
 
-  allow_overwrite = var.allow_overwrite
-  domain_name     = each.value
-
-  hosted_zone_name = (
-    var.validate_certificates ?
-    try(var.additional_hosted_zones[each.value], var.hosted_zone_name) :
-    null
-  )
+  allow_overwrite  = var.allow_overwrite
+  domain_name      = each.value
+  hosted_zone_name = var.validate_certificates ? var.hosted_zone_name : null
 }
 
 module "alias" {
-  for_each  = toset(var.create_aliases ? local.domain_names : [])
+  for_each  = toset(var.create_domain_aliases)
   providers = { aws = aws.route53 }
   source    = "./modules/alb-route53-alias"
 
-  alb             = module.alb.instance
-  allow_overwrite = var.allow_overwrite
-  name            = each.value
-
-  hosted_zone_name = try(
-    var.additional_hosted_zones[each.value],
-    var.hosted_zone_name
-  )
+  alb_dns_name     = module.alb.dns_name
+  alb_zone_id      = module.alb.zone_id
+  allow_overwrite  = var.allow_overwrite
+  hosted_zone_name = var.hosted_zone_name
+  name             = each.value
 }
 
 module "target_group" {
   for_each  = var.target_groups
-  providers = { aws = aws.cluster }
+  providers = { aws = aws.alb }
   source    = "./modules/alb-target-group"
 
   enable_stickiness = var.enable_stickiness
@@ -92,12 +84,16 @@ data "aws_lb_target_group" "legacy" {
 }
 
 locals {
-  certificate_domain_name = coalesce(
-    var.certificate_domain_name,
-    var.primary_domain_name
-  )
+  certificate_domains = toset(concat(
+    [var.primary_certificate_domain],
+    var.issue_certificate_domains,
+    var.attach_certificate_domains
+  ))
 
-  domain_names = concat([var.primary_domain_name], var.alternative_domain_names)
+  alternative_certificate_domains = setsubtract(
+    local.certificate_domains,
+    [var.primary_certificate_domain]
+  )
 
   target_groups = zipmap(
     concat(keys(var.target_groups), keys(data.aws_lb_target_group.legacy)),

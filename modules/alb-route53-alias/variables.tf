@@ -1,6 +1,11 @@
-variable "alb" {
-  description = "ALB for which an alias should be created"
-  type        = object({ dns_name = string, zone_id = string })
+variable "alb_dns_name" {
+  description = "DNS name for the ALB for which an alias should be created"
+  type        = string
+}
+
+variable "alb_zone_id" {
+  description = "Route53 zone for the ALB for which an alias should be created"
+  type        = string
 }
 
 variable "allow_overwrite" {

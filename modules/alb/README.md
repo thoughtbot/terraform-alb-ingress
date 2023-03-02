@@ -41,6 +41,8 @@ No modules.
 
 | Name | Description |
 |------|-------------|
+| <a name="output_dns_name"></a> [dns\_name](#output\_dns\_name) | DNS name of the created application load balancer |
 | <a name="output_instance"></a> [instance](#output\_instance) | The created AWS application load balancer |
 | <a name="output_security_group"></a> [security\_group](#output\_security\_group) | The security group created for this load balancer |
+| <a name="output_zone_id"></a> [zone\_id](#output\_zone\_id) | Route53 zone of the created application load balancer |
 <!-- END_TF_DOCS -->

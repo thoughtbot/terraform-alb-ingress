@@ -1,5 +1,5 @@
 provider "aws" {
-  alias  = "cluster"
+  alias  = "alb"
   region = "us-east-1"
 }
 
