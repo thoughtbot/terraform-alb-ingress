@@ -215,9 +215,10 @@ module "ingress" {
 | <a name="input_alarm_actions"></a> [alarm\_actions](#input\_alarm\_actions) | SNS topics or other actions to invoke for alarms | `list(object({ arn = string }))` | `[]` | no |
 | <a name="input_alarm_evaluation_minutes"></a> [alarm\_evaluation\_minutes](#input\_alarm\_evaluation\_minutes) | Number of minutes of alarm state until triggering an alarm | `number` | `2` | no |
 | <a name="input_allow_overwrite"></a> [allow\_overwrite](#input\_allow\_overwrite) | Allow overwriting of existing DNS records | `bool` | `false` | no |
-| <a name="input_attach_certificate_domains"></a> [attach\_certificate\_domains](#input\_attach\_certificate\_domains) | Additional existing certificates which should be attached | `list(string)` | `[]` | no |
-| <a name="input_certificate_types"></a> [certificate\_types](#input\_certificate\_types) | Types of certificates to look for (default: AMAZON\_ISSUED) | `list(string)` | <pre>[<br>  "AMAZON_ISSUED"<br>]</pre> | no |
-| <a name="input_create_domain_aliases"></a> [create\_domain\_aliases](#input\_create\_domain\_aliases) | List of domains for which alias records should be created | `list(string)` | n/a | yes |
+| <a name="input_alternative_domain_names"></a> [alternative\_domain\_names](#input\_alternative\_domain\_names) | Alternative domain names for the ALB | `list(string)` | `[]` | no |
+| <a name="input_certificate_domain_name"></a> [certificate\_domain\_name](#input\_certificate\_domain\_name) | Override the domain name for the ACM certificate (defaults to primary domain) | `string` | `null` | no |
+| <a name="input_certificate_types"></a> [certificate\_types](#input\_certificate\_types) | Types of certificates to look for (default: AMAZON\_ISSUED) | `list(string)` | <pre>[<br/>  "AMAZON_ISSUED"<br/>]</pre> | no |
+| <a name="input_create_aliases"></a> [create\_aliases](#input\_create\_aliases) | Set to false to disable creation of Route 53 aliases | `bool` | `true` | no |
 | <a name="input_description"></a> [description](#input\_description) | Human description for this load balancer | `string` | n/a | yes |
 | <a name="input_enable_stickiness"></a> [enable\_stickiness](#input\_enable\_stickiness) | Set to true to use a cookie for load balancer stickiness | `bool` | `false` | no |
 | <a name="input_failure_threshold"></a> [failure\_threshold](#input\_failure\_threshold) | Percentage of failed requests considered an anomaly | `number` | `5` | no |
@@ -231,7 +232,7 @@ module "ingress" {
 | <a name="input_subnet_ids"></a> [subnet\_ids](#input\_subnet\_ids) | Subnets for this load balancer | `list(string)` | n/a | yes |
 | <a name="input_tags"></a> [tags](#input\_tags) | Tags to apply to created resources | `map(string)` | `{}` | no |
 | <a name="input_target_group_weights"></a> [target\_group\_weights](#input\_target\_group\_weights) | Weight for each target group (defaults to 100) | `map(number)` | `{}` | no |
-| <a name="input_target_groups"></a> [target\_groups](#input\_target\_groups) | Target groups to which this rule should forward | <pre>map(object({<br>    health_check_path = string,<br>    health_check_port = number,<br>    name              = string<br>  }))</pre> | n/a | yes |
+| <a name="input_target_groups"></a> [target\_groups](#input\_target\_groups) | Target groups to which this rule should forward | <pre>map(object({<br/>    health_check_path = string,<br/>    health_check_port = number,<br/>    name              = string<br/>  }))</pre> | n/a | yes |
 | <a name="input_validate_certificates"></a> [validate\_certificates](#input\_validate\_certificates) | Set to false to disable validation via Route 53 | `bool` | `true` | no |
 | <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | VPC for the ALB | `string` | n/a | yes |
 
