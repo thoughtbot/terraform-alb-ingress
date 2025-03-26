@@ -20,7 +20,7 @@ variable "name" {
   type        = string
 }
 
-variable "s3_bucket_name" {
+variable "s3_logs_bucket_name" {
   type        = string
   default     = ""
   description = "Optional S3 bucket name for storing ALB access logs. If not provided, a new bucket will be created."

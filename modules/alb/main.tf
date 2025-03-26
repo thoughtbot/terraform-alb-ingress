@@ -5,7 +5,7 @@ resource "aws_alb" "this" {
   dynamic "connection_logs" {
     for_each = var.enable_connection_logs ? [1] : []
     content {
-      bucket  = var.s3_bucket_name != "" ? var.s3_bucket_name : aws_s3_bucket.lb_logs[0].id
+      bucket  = var.s3_logs_bucket_name != "" ? var.s3_logs_bucket_name : aws_s3_bucket.lb_logs[0].id
       prefix  = "connectionlogs"
       enabled = true
     }
@@ -14,7 +14,7 @@ resource "aws_alb" "this" {
   dynamic "access_logs" {
     for_each = var.enable_access_logs ? [1] : []
     content {
-      bucket  = var.s3_bucket_name != "" ? var.s3_bucket_name : aws_s3_bucket.lb_logs[0].id
+      bucket  = var.s3_logs_bucket_name != "" ? var.s3_logs_bucket_name : aws_s3_bucket.lb_logs[0].id
       prefix  = "accesslogs"
       enabled = true
     }
@@ -24,8 +24,8 @@ resource "aws_alb" "this" {
 }
 
 resource "aws_s3_bucket" "lb_logs" {
-  count  = var.s3_bucket_name == "" ? 1 : 0
-  bucket = var.s3_bucket_name == "" ? "${var.name}-alb-logs-${random_id.suffix.hex}" : var.s3_bucket_name
+  count  = var.s3_logs_bucket_name == "" ? 1 : 0
+  bucket = var.s3_logs_bucket_name == "" ? "${var.name}-alb-logs-${random_id.suffix.hex}" : var.s3_logs_bucket_name
 }
 
 resource "random_id" "suffix" {

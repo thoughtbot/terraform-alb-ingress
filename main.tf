@@ -2,12 +2,16 @@ module "alb" {
   providers = { aws = aws.cluster }
   source    = "./modules/alb"
 
-  description = var.description
-  name        = var.name
-  namespace   = var.namespace
-  subnet_ids  = var.subnet_ids
-  tags        = var.tags
-  vpc_id      = var.vpc_id
+  description            = var.description
+  name                   = var.name
+  enable_access_logs     = var.enable_access_logs
+  enable_connection_logs = var.enable_connection_logs
+  s3_logs_bucket_name    = var.s3_logs_bucket_name
+
+  namespace  = var.namespace
+  subnet_ids = var.subnet_ids
+  tags       = var.tags
+  vpc_id     = var.vpc_id
 }
 
 module "cloudwatch_alarms" {
