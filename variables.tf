@@ -38,6 +38,17 @@ variable "description" {
   type        = string
 }
 
+variable "enable_access_logs" {
+  type        = bool
+  default     = false
+  description = "Enable or disable ALB access logs. If set to true, logs will be stored in an S3 bucket."
+}
+
+variable "enable_connection_logs" {
+  type        = bool
+  default     = false
+  description = "Enable or disable ALB connection logs. If set to true, logs will be stored in an S3 bucket."
+}
 variable "enable_stickiness" {
   type        = bool
   description = "Set to true to use a cookie for load balancer stickiness"
@@ -76,6 +87,12 @@ variable "name" {
 variable "primary_certificate_domain" {
   description = "Primary domain name for the load balancer certificate"
   type        = string
+}
+
+variable "s3_logs_bucket_name" {
+  type        = string
+  default     = ""
+  description = "Optional S3 bucket name for storing ALB access logs. If not provided, a new bucket will be created."
 }
 
 variable "security_group_name" {
