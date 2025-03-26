@@ -2,15 +2,6 @@ resource "aws_alb" "this" {
   name            = join("-", concat(var.namespace, [var.name]))
   security_groups = [aws_security_group.this.id]
 
-  dynamic "connection_logs" {
-    for_each = var.enable_connection_logs ? [1] : []
-    content {
-      bucket  = var.s3_logs_bucket_name != "" ? var.s3_logs_bucket_name : aws_s3_bucket.lb_logs[0].id
-      prefix  = "connectionlogs"
-      enabled = true
-    }
-  }
-
   dynamic "access_logs" {
     for_each = var.enable_access_logs ? [1] : []
     content {

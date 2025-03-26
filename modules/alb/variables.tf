@@ -8,13 +8,6 @@ variable "enable_access_logs" {
   default     = false
   description = "Enable or disable ALB access logs. If set to true, logs will be stored in an S3 bucket."
 }
-
-variable "enable_connection_logs" {
-  type        = bool
-  default     = false
-  description = "Enable or disable ALB connection logs. If set to true, logs will be stored in an S3 bucket."
-}
-
 variable "name" {
   description = "Name for this load balancer"
   type        = string
