@@ -1,8 +1,35 @@
 resource "aws_alb" "this" {
   name            = join("-", concat(var.namespace, [var.name]))
   security_groups = [aws_security_group.this.id]
-  subnets         = var.subnet_ids
-  tags            = var.tags
+
+  dynamic "connection_logs" {
+    for_each = var.enable_connection_logs ? [1] : []
+    content {
+      bucket  = var.s3_bucket_name != "" ? var.s3_bucket_name : aws_s3_bucket.lb_logs[0].id
+      prefix  = "connectionlogs"
+      enabled = true
+    }
+  }
+
+  dynamic "access_logs" {
+    for_each = var.enable_access_logs ? [1] : []
+    content {
+      bucket  = var.s3_bucket_name != "" ? var.s3_bucket_name : aws_s3_bucket.lb_logs[0].id
+      prefix  = "accesslogs"
+      enabled = true
+    }
+  }
+  subnets = var.subnet_ids
+  tags    = var.tags
+}
+
+resource "aws_s3_bucket" "lb_logs" {
+  count  = var.s3_bucket_name == "" ? 1 : 0
+  bucket = var.s3_bucket_name == "" ? "${var.name}-alb-logs-${random_id.suffix.hex}" : var.s3_bucket_name
+}
+
+resource "random_id" "suffix" {
+  byte_length = 4
 }
 
 resource "aws_security_group" "this" {
