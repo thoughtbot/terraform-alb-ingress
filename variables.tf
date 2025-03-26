@@ -56,12 +56,6 @@ variable "enable_access_logs" {
   default     = false
   description = "Enable or disable ALB access logs. If set to true, logs will be stored in an S3 bucket."
 }
-
-variable "enable_connection_logs" {
-  type        = bool
-  default     = false
-  description = "Enable or disable ALB connection logs. If set to true, logs will be stored in an S3 bucket."
-}
 variable "enable_stickiness" {
   type        = bool
   description = "Set to true to use a cookie for load balancer stickiness"
