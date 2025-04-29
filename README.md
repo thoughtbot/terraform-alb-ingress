@@ -219,6 +219,7 @@ module "ingress" {
 | <a name="input_certificate_types"></a> [certificate\_types](#input\_certificate\_types) | Types of certificates to look for (default: AMAZON\_ISSUED) | `list(string)` | <pre>[<br>  "AMAZON_ISSUED"<br>]</pre> | no |
 | <a name="input_create_domain_aliases"></a> [create\_domain\_aliases](#input\_create\_domain\_aliases) | List of domains for which alias records should be created | `list(string)` | n/a | yes |
 | <a name="input_description"></a> [description](#input\_description) | Human description for this load balancer | `string` | n/a | yes |
+| <a name="input_enable_access_logs"></a> [enable\_access\_logs](#input\_enable\_access\_logs) | Enable or disable ALB access logs. If set to true, logs will be stored in an S3 bucket. | `bool` | `false` | no |
 | <a name="input_enable_stickiness"></a> [enable\_stickiness](#input\_enable\_stickiness) | Set to true to use a cookie for load balancer stickiness | `bool` | `false` | no |
 | <a name="input_failure_threshold"></a> [failure\_threshold](#input\_failure\_threshold) | Percentage of failed requests considered an anomaly | `number` | `5` | no |
 | <a name="input_hosted_zone_name"></a> [hosted\_zone\_name](#input\_hosted\_zone\_name) | Hosted zone for AWS Route53 | `string` | `null` | no |
@@ -226,6 +227,7 @@ module "ingress" {
 | <a name="input_legacy_target_group_names"></a> [legacy\_target\_group\_names](#input\_legacy\_target\_group\_names) | Names of legacy target groups which should be included | `list(string)` | `[]` | no |
 | <a name="input_name"></a> [name](#input\_name) | Name for this load balancer | `string` | n/a | yes |
 | <a name="input_primary_certificate_domain"></a> [primary\_certificate\_domain](#input\_primary\_certificate\_domain) | Primary domain name for the load balancer certificate | `string` | n/a | yes |
+| <a name="input_s3_logs_bucket_name"></a> [s3\_logs\_bucket\_name](#input\_s3\_logs\_bucket\_name) | Optional S3 bucket name for storing ALB access logs. If not provided, a new bucket will be created. | `string` | `""` | no |
 | <a name="input_security_group_name"></a> [security\_group\_name](#input\_security\_group\_name) | Name for the load balancer security group; defaults to name | `string` | `null` | no |
 | <a name="input_slow_response_threshold"></a> [slow\_response\_threshold](#input\_slow\_response\_threshold) | Response time considered extremely slow | `number` | `10` | no |
 | <a name="input_subnet_ids"></a> [subnet\_ids](#input\_subnet\_ids) | Subnets for this load balancer | `list(string)` | n/a | yes |
