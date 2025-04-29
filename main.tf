@@ -8,6 +8,12 @@ module "alb" {
   subnet_ids          = var.subnet_ids
   tags                = var.tags
   vpc_id              = var.vpc_id
+  enable_access_logs  = var.enable_access_logs
+  s3_logs_bucket_name = var.s3_logs_bucket_name
+
+  subnet_ids = var.subnet_ids
+  tags       = var.tags
+  vpc_id     = var.vpc_id
 }
 
 module "cloudwatch_alarms" {
