@@ -74,6 +74,12 @@ variable "hosted_zone_name" {
   default     = null
 }
 
+variable "internal_alb" {
+  description = "If true, the LB will be internal. Defaults to false"
+  type        = bool
+  default     = false
+}
+
 variable "issue_certificates" {
   description = "Set to false to disable creation of ACM certificates"
   type        = bool

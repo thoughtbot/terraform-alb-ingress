@@ -1,5 +1,6 @@
 resource "aws_alb" "this" {
   name            = join("-", concat(var.namespace, [var.name]))
+  internal        = var.internal_alb
   security_groups = [aws_security_group.this.id]
 
   dynamic "access_logs" {

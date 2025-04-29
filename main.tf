@@ -5,6 +5,7 @@ module "alb" {
   description         = var.description
   name                = var.name
   enable_access_logs  = var.enable_access_logs
+  internal_alb        = var.internal_alb
   s3_logs_bucket_name = var.s3_logs_bucket_name
 
   namespace  = var.namespace
