@@ -67,7 +67,11 @@ variable "issue_certificate_domains" {
   type        = list(string)
   default     = []
 }
-
+variable "internal_alb" {
+  description = "If true, the LB will be internal. Defaults to false"
+  type        = bool
+  default     = false
+}
 variable "legacy_target_group_names" {
   description = "Names of legacy target groups which should be included"
   type        = list(string)

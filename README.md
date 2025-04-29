@@ -223,6 +223,7 @@ module "ingress" {
 | <a name="input_enable_stickiness"></a> [enable\_stickiness](#input\_enable\_stickiness) | Set to true to use a cookie for load balancer stickiness | `bool` | `false` | no |
 | <a name="input_failure_threshold"></a> [failure\_threshold](#input\_failure\_threshold) | Percentage of failed requests considered an anomaly | `number` | `5` | no |
 | <a name="input_hosted_zone_name"></a> [hosted\_zone\_name](#input\_hosted\_zone\_name) | Hosted zone for AWS Route53 | `string` | `null` | no |
+| <a name="input_internal_alb"></a> [internal\_alb](#input\_internal\_alb) | If true, the LB will be internal. Defaults to false | `bool` | `false` | no |
 | <a name="input_issue_certificate_domains"></a> [issue\_certificate\_domains](#input\_issue\_certificate\_domains) | List of domains for which certificates should be issued | `list(string)` | `[]` | no |
 | <a name="input_legacy_target_group_names"></a> [legacy\_target\_group\_names](#input\_legacy\_target\_group\_names) | Names of legacy target groups which should be included | `list(string)` | `[]` | no |
 | <a name="input_name"></a> [name](#input\_name) | Name for this load balancer | `string` | n/a | yes |
