@@ -37,6 +37,7 @@ No modules.
 | <a name="input_description"></a> [description](#input\_description) | Human description for this load balancer | `string` | n/a | yes |
 | <a name="input_enable_access_logs"></a> [enable\_access\_logs](#input\_enable\_access\_logs) | Enable or disable ALB access logs. If set to true, logs will be stored in an S3 bucket. | `bool` | `false` | no |
 | <a name="input_enable_connection_logs"></a> [enable\_connection\_logs](#input\_enable\_connection\_logs) | Enable or disable ALB connection logs. If set to true, logs will be stored in an S3 bucket. | `bool` | `false` | no |
+| <a name="input_internal_alb"></a> [internal\_alb](#input\_internal\_alb) | If true, the LB will be internal. Defaults to false | `bool` | `false` | no |
 | <a name="input_name"></a> [name](#input\_name) | Name for this load balancer | `string` | n/a | yes |
 | <a name="input_s3_logs_bucket_name"></a> [s3\_logs\_bucket\_name](#input\_s3\_logs\_bucket\_name) | Optional S3 bucket name for storing ALB access logs. If not provided, a new bucket will be created. | `string` | `""` | no |
 | <a name="input_security_group_name"></a> [security\_group\_name](#input\_security\_group\_name) | Name for the load balancer security group; defaults to name | `string` | `null` | no |
