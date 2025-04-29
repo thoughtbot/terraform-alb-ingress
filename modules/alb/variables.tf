@@ -15,6 +15,12 @@ variable "enable_connection_logs" {
   description = "Enable or disable ALB connection logs. If set to true, logs will be stored in an S3 bucket."
 }
 
+variable "internal_alb" {
+  description = "If true, the LB will be internal. Defaults to false"
+  type        = bool
+  default     = false
+}
+
 variable "name" {
   description = "Name for this load balancer"
   type        = string

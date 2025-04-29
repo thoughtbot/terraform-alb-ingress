@@ -1,5 +1,6 @@
 resource "aws_alb" "this" {
   name            = var.name
+  internal        = var.internal_alb
   security_groups = [aws_security_group.this.id]
 
   dynamic "connection_logs" {
