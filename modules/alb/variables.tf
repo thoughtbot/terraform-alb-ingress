@@ -20,11 +20,6 @@ variable "name" {
   type        = string
 }
 
-variable "security_group_name" {
-  type        = string
-  description = "Name for the load balancer security group; defaults to name"
-  default     = null
-}
 variable "s3_bucket_name" {
   type        = string
   default     = ""
