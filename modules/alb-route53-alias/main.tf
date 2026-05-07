@@ -27,7 +27,7 @@ resource "aws_route53_record" "weighted_load_balancer" {
   allow_overwrite = var.allow_overwrite
   name            = var.name
   type            = "A"
-  zone_id         = data.aws_route53_zone.this[each.value].zone_id
+  zone_id         = data.aws_route53_zone.this[each.key].zone_id
   set_identifier  = each.value.set_identifier
 
   weighted_routing_policy {
