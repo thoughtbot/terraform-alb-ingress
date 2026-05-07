@@ -30,8 +30,8 @@ No modules.
 |------|-------------|------|---------|:--------:|
 | <a name="input_alb_dns_name"></a> [alb\_dns\_name](#input\_alb\_dns\_name) | DNS name for the ALB for which an alias should be created | `string` | n/a | yes |
 | <a name="input_alb_zone_id"></a> [alb\_zone\_id](#input\_alb\_zone\_id) | Route53 zone for the ALB for which an alias should be created | `string` | n/a | yes |
-| <a name="input_allow_overwrite"></a> [allow\_overwrite](#input\_allow\_overwrite) | Allow overwriting of existing DNS records | `bool` | `false` | no |
 | <a name="input_alias_weighted_routing"></a> [alias\_weighted\_routing](#input\_alias\_weighted\_routing) | Optional weighted routing configuration for the Route 53 alias | <pre>object({<br>    weight         = number<br>    set_identifier = string<br>  })</pre> | `null` | no |
+| <a name="input_allow_overwrite"></a> [allow\_overwrite](#input\_allow\_overwrite) | Allow overwriting of existing DNS records | `bool` | `false` | no |
 | <a name="input_hosted_zone_name"></a> [hosted\_zone\_name](#input\_hosted\_zone\_name) | Hosted zone for AWS Route53 | `string` | `null` | no |
 | <a name="input_name"></a> [name](#input\_name) | Name of the Route 53 alias (example: www) | `string` | n/a | yes |
 
