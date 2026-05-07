@@ -31,18 +31,12 @@ variable "alias_weighted_routing" {
   default = null
 
   validation {
-    condition = (
-      var.alias_weighted_routing == null ||
-      var.alias_weighted_routing.weight >= 0
-    )
+    condition     = try(var.alias_weighted_routing.weight >= 0, true)
     error_message = "alias_weighted_routing.weight must be greater than or equal to 0."
   }
 
   validation {
-    condition = (
-      var.alias_weighted_routing == null ||
-      trimspace(var.alias_weighted_routing.set_identifier) != ""
-    )
+    condition     = try(trimspace(var.alias_weighted_routing.set_identifier) != "", true)
     error_message = "alias_weighted_routing.set_identifier must not be empty."
   }
 }
