@@ -67,9 +67,10 @@ module "alias" {
   providers = { aws = aws.route53 }
   source    = "./modules/alb-route53-alias"
 
-  alb             = module.alb.instance
-  allow_overwrite = var.allow_overwrite
-  name            = each.value
+  alb                    = module.alb.instance
+  alias_weighted_routing = var.alias_weighted_routing
+  allow_overwrite        = var.allow_overwrite
+  name                   = each.value
 
   hosted_zone_name = try(
     var.additional_hosted_zones[each.value],
