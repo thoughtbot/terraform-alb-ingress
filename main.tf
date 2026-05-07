@@ -61,11 +61,12 @@ module "alias" {
   providers = { aws = aws.route53 }
   source    = "./modules/alb-route53-alias"
 
-  alb_dns_name     = module.alb.dns_name
-  alb_zone_id      = module.alb.zone_id
-  allow_overwrite  = var.allow_overwrite
-  hosted_zone_name = var.hosted_zone_name
-  name             = each.value
+  alb_dns_name           = module.alb.dns_name
+  alb_zone_id            = module.alb.zone_id
+  alias_weighted_routing = var.alias_weighted_routing
+  allow_overwrite        = var.allow_overwrite
+  hosted_zone_name       = var.hosted_zone_name
+  name                   = each.value
 }
 
 module "target_group" {

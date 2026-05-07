@@ -176,6 +176,27 @@ module "ingress" {
 }
 ```
 
+To create weighted Route 53 aliases, set `alias_weighted_routing`. This applies
+to every alias created by the module instance, and is intended for coordinating
+peer weighted records created from separate Terraform states or applies.
+
+``` terraform
+module "ingress" {
+  source = "..."
+
+  primary_domain_name = "www.example.com"
+  hosted_zone_name    = "example.com"
+
+  alias_weighted_routing = {
+    weight         = 10
+    set_identifier = "primary"
+  }
+}
+```
+
+For a given Route 53 weighted record set, `set_identifier` must be unique for
+the combination of hosted zone, record name, and record type.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 
@@ -214,6 +235,7 @@ module "ingress" {
 |------|-------------|------|---------|:--------:|
 | <a name="input_alarm_actions"></a> [alarm\_actions](#input\_alarm\_actions) | SNS topics or other actions to invoke for alarms | `list(object({ arn = string }))` | `[]` | no |
 | <a name="input_alarm_evaluation_minutes"></a> [alarm\_evaluation\_minutes](#input\_alarm\_evaluation\_minutes) | Number of minutes of alarm state until triggering an alarm | `number` | `2` | no |
+| <a name="input_alias_weighted_routing"></a> [alias\_weighted\_routing](#input\_alias\_weighted\_routing) | Optional weighted routing configuration for Route 53 aliases | <pre>object({<br>    weight         = number<br>    set_identifier = string<br>  })</pre> | `null` | no |
 | <a name="input_allow_overwrite"></a> [allow\_overwrite](#input\_allow\_overwrite) | Allow overwriting of existing DNS records | `bool` | `false` | no |
 | <a name="input_attach_certificate_domains"></a> [attach\_certificate\_domains](#input\_attach\_certificate\_domains) | Additional existing certificates which should be attached | `list(string)` | `[]` | no |
 | <a name="input_certificate_types"></a> [certificate\_types](#input\_certificate\_types) | Types of certificates to look for (default: AMAZON\_ISSUED) | `list(string)` | <pre>[<br>  "AMAZON_ISSUED"<br>]</pre> | no |
