@@ -21,6 +21,7 @@ module "ingress" {
 
   alarm_actions            = [data.aws_sns_topic.cloudwatch_alarms]
   alternate_domain_names   = ["example.com", "api.example.com"]
+  create_validation_records = true
   description              = "My example application"
   hosted_zone_name         = "example.com"
   name                     = "example-ingress"
@@ -70,6 +71,9 @@ module "ingress" {
 
   # Disable issuing of certificates entirely.
   issue_certificates = false
+
+  # Disable creation of Route 53 validation records when they already exist.
+  create_validation_records = false
 
   # If you have multiple DNS hosted zones, you can set the hosted zone name for
   # each domain name:
@@ -145,6 +149,7 @@ the combination of hosted zone, record name, and record type.
 | <a name="input_certificate_domain_name"></a> [certificate\_domain\_name](#input\_certificate\_domain\_name) | Override the domain name for the ACM certificate (defaults to primary domain) | `string` | `null` | no |
 | <a name="input_certificate_types"></a> [certificate\_types](#input\_certificate\_types) | Types of certificates to look for (default: AMAZON\_ISSUED) | `list(string)` | <pre>[<br>  "AMAZON_ISSUED"<br>]</pre> | no |
 | <a name="input_create_aliases"></a> [create\_aliases](#input\_create\_aliases) | Set to false to disable creation of Route 53 aliases | `bool` | `true` | no |
+| <a name="input_create_validation_records"></a> [create\_validation\_records](#input\_create\_validation\_records) | Create Route53 DNS validation records for ACM certificates managed by this module | `bool` | `true` | no |
 | <a name="input_description"></a> [description](#input\_description) | Human description for this load balancer | `string` | n/a | yes |
 | <a name="input_enable_stickiness"></a> [enable\_stickiness](#input\_enable\_stickiness) | Set to true to use a cookie for load balancer stickiness | `bool` | `false` | no |
 | <a name="input_failure_threshold"></a> [failure\_threshold](#input\_failure\_threshold) | Percentage of failed requests considered an anomaly | `number` | `5` | no |

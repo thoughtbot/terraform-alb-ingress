@@ -65,6 +65,12 @@ variable "create_aliases" {
   default     = true
 }
 
+variable "create_validation_records" {
+  description = "Create Route53 DNS validation records for ACM certificates managed by this module"
+  type        = bool
+  default     = true
+}
+
 variable "description" {
   description = "Human description for this load balancer"
   type        = string

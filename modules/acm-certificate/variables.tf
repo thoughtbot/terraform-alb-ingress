@@ -10,6 +10,12 @@ variable "alternative_names" {
   default     = []
 }
 
+variable "create_validation_records" {
+  type        = bool
+  description = "Create Route53 DNS validation records for the certificate"
+  default     = true
+}
+
 variable "domain_name" {
   type        = string
   description = "Domain for which an SSL certificate should be created"

@@ -26,7 +26,7 @@ locals {
 resource "aws_route53_record" "validation" {
   provider = aws.route53
 
-  count = var.hosted_zone_name == null ? 0 : 1
+  count = var.hosted_zone_name == null || !var.create_validation_records ? 0 : 1
 
   allow_overwrite = var.allow_overwrite
   name            = local.domain_validation_options[0].resource_record_name
@@ -39,7 +39,7 @@ resource "aws_route53_record" "validation" {
 resource "aws_route53_record" "alternative_validation" {
   provider = aws.route53
 
-  count = var.hosted_zone_name == null ? 0 : length(var.alternative_names)
+  count = var.hosted_zone_name == null || !var.create_validation_records ? 0 : length(var.alternative_names)
 
   allow_overwrite = var.allow_overwrite
   name            = local.domain_validation_options[count.index].resource_record_name
@@ -54,10 +54,10 @@ resource "aws_acm_certificate_validation" "this" {
 
   certificate_arn = aws_acm_certificate.this.arn
 
-  validation_record_fqdns = concat(
-    aws_route53_record.validation.*.fqdn,
-    aws_route53_record.alternative_validation.*.fqdn
-  )
+  validation_record_fqdns = var.create_validation_records ? concat(
+    aws_route53_record.validation[*].fqdn,
+    aws_route53_record.alternative_validation[*].fqdn
+  ) : null
 }
 
 data "aws_route53_zone" "this" {

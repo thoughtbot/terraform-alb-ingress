@@ -52,8 +52,9 @@ module "acm_certificate" {
   providers = { aws.certificate = aws.cluster, aws.route53 = aws.route53 }
   source    = "./modules/acm-certificate"
 
-  allow_overwrite = var.allow_overwrite
-  domain_name     = each.value
+  allow_overwrite           = var.allow_overwrite
+  create_validation_records = var.create_validation_records
+  domain_name               = each.value
 
   hosted_zone_name = (
     var.validate_certificates ?
