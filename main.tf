@@ -69,7 +69,7 @@ module "alias" {
   source    = "./modules/alb-route53-alias"
 
   alb                    = module.alb.instance
-  alias_weighted_routing = var.alias_weighted_routing
+  alias_weighted_routing = lookup(var.alias_weighted_routing, each.value, null)
   allow_overwrite        = var.allow_overwrite
   name                   = each.value
 

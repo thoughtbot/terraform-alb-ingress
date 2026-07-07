@@ -83,20 +83,24 @@ module "ingress" {
 }
 ```
 
-To create weighted Route 53 aliases, set `alias_weighted_routing`. This applies
-to every alias created by the module instance, and is intended for coordinating
-peer weighted records created from separate Terraform states or applies.
+To create weighted Route 53 aliases, set `alias_weighted_routing` to a map keyed
+by alias domain name. Each entry weights that one alias independently; domains
+absent from the map get a plain (non-weighted) alias record. This is intended for
+coordinating peer weighted records created from separate Terraform states or
+applies.
 
 ``` terraform
 module "ingress" {
   source = "..."
 
-  primary_domain_name = "www.example.com"
-  hosted_zone_name    = "example.com"
+  primary_domain_name      = "www.example.com"
+  alternative_domain_names = ["api.example.com"]
+  hosted_zone_name         = "example.com"
 
   alias_weighted_routing = {
-    weight         = 10
-    set_identifier = "primary"
+    "www.example.com" = { weight = 10, set_identifier = "primary" }
+    # domains not listed here (e.g. "api.example.com") get a plain,
+    # non-weighted alias record
   }
 }
 ```
@@ -109,14 +113,14 @@ the combination of hosted zone, record name, and record type.
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.14.0 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 4.0 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.6.2 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 5.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | ~> 4.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | ~> 5.0 |
 
 ## Modules
 
@@ -143,22 +147,25 @@ the combination of hosted zone, record name, and record type.
 | <a name="input_additional_hosted_zones"></a> [additional\_hosted\_zones](#input\_additional\_hosted\_zones) | Override the hosted zone for a particular domain | `map(string)` | `{}` | no |
 | <a name="input_alarm_actions"></a> [alarm\_actions](#input\_alarm\_actions) | SNS topics or other actions to invoke for alarms | `list(object({ arn = string }))` | `[]` | no |
 | <a name="input_alarm_evaluation_minutes"></a> [alarm\_evaluation\_minutes](#input\_alarm\_evaluation\_minutes) | Number of minutes of alarm state until triggering an alarm | `number` | `2` | no |
+| <a name="input_alias_weighted_routing"></a> [alias\_weighted\_routing](#input\_alias\_weighted\_routing) | Optional per-domain weighted routing config for Route 53 aliases, keyed by alias domain name. Domains absent from the map get a plain (non-weighted) alias record. | <pre>map(object({<br>    weight         = number<br>    set_identifier = string<br>  }))</pre> | `{}` | no |
 | <a name="input_allow_overwrite"></a> [allow\_overwrite](#input\_allow\_overwrite) | Allow overwriting of existing DNS records | `bool` | `false` | no |
-| <a name="input_alias_weighted_routing"></a> [alias\_weighted\_routing](#input\_alias\_weighted\_routing) | Optional weighted routing configuration for Route 53 aliases | <pre>object({<br>    weight         = number<br>    set_identifier = string<br>  })</pre> | `null` | no |
 | <a name="input_alternative_domain_names"></a> [alternative\_domain\_names](#input\_alternative\_domain\_names) | Alternative domain names for the ALB | `list(string)` | `[]` | no |
 | <a name="input_certificate_domain_name"></a> [certificate\_domain\_name](#input\_certificate\_domain\_name) | Override the domain name for the ACM certificate (defaults to primary domain) | `string` | `null` | no |
 | <a name="input_certificate_types"></a> [certificate\_types](#input\_certificate\_types) | Types of certificates to look for (default: AMAZON\_ISSUED) | `list(string)` | <pre>[<br>  "AMAZON_ISSUED"<br>]</pre> | no |
 | <a name="input_create_aliases"></a> [create\_aliases](#input\_create\_aliases) | Set to false to disable creation of Route 53 aliases | `bool` | `true` | no |
 | <a name="input_create_validation_records"></a> [create\_validation\_records](#input\_create\_validation\_records) | Create Route53 DNS validation records for ACM certificates managed by this module | `bool` | `true` | no |
 | <a name="input_description"></a> [description](#input\_description) | Human description for this load balancer | `string` | n/a | yes |
+| <a name="input_enable_access_logs"></a> [enable\_access\_logs](#input\_enable\_access\_logs) | Enable or disable ALB access logs. If set to true, logs will be stored in an S3 bucket. | `bool` | `false` | no |
 | <a name="input_enable_stickiness"></a> [enable\_stickiness](#input\_enable\_stickiness) | Set to true to use a cookie for load balancer stickiness | `bool` | `false` | no |
 | <a name="input_failure_threshold"></a> [failure\_threshold](#input\_failure\_threshold) | Percentage of failed requests considered an anomaly | `number` | `5` | no |
 | <a name="input_hosted_zone_name"></a> [hosted\_zone\_name](#input\_hosted\_zone\_name) | Hosted zone for AWS Route53 | `string` | `null` | no |
+| <a name="input_internal_alb"></a> [internal\_alb](#input\_internal\_alb) | If true, the LB will be internal. Defaults to false | `bool` | `false` | no |
 | <a name="input_issue_certificates"></a> [issue\_certificates](#input\_issue\_certificates) | Set to false to disable creation of ACM certificates | `bool` | `true` | no |
 | <a name="input_legacy_target_group_names"></a> [legacy\_target\_group\_names](#input\_legacy\_target\_group\_names) | Names of legacy target groups which should be included | `list(string)` | `[]` | no |
 | <a name="input_name"></a> [name](#input\_name) | Name for this load balancer | `string` | n/a | yes |
 | <a name="input_namespace"></a> [namespace](#input\_namespace) | Prefix to apply to created resources | `list(string)` | `[]` | no |
 | <a name="input_primary_domain_name"></a> [primary\_domain\_name](#input\_primary\_domain\_name) | Primary domain name for the ALB | `string` | n/a | yes |
+| <a name="input_s3_logs_bucket_name"></a> [s3\_logs\_bucket\_name](#input\_s3\_logs\_bucket\_name) | Optional S3 bucket name for storing ALB access logs. If not provided, a new bucket will be created. | `string` | `""` | no |
 | <a name="input_slow_response_threshold"></a> [slow\_response\_threshold](#input\_slow\_response\_threshold) | Response time considered extremely slow | `number` | `10` | no |
 | <a name="input_subnet_ids"></a> [subnet\_ids](#input\_subnet\_ids) | Subnets for this load balancer | `list(string)` | n/a | yes |
 | <a name="input_tags"></a> [tags](#input\_tags) | Tags to apply to created resources | `map(string)` | `{}` | no |

@@ -23,21 +23,21 @@ variable "allow_overwrite" {
 }
 
 variable "alias_weighted_routing" {
-  description = "Optional weighted routing configuration for Route 53 aliases"
-  type = object({
+  description = "Optional per-domain weighted routing config for Route 53 aliases, keyed by alias domain name. Domains absent from the map get a plain (non-weighted) alias record."
+  type = map(object({
     weight         = number
     set_identifier = string
-  })
-  default = null
+  }))
+  default = {}
 
   validation {
-    condition     = try(var.alias_weighted_routing.weight >= 0, true)
-    error_message = "alias_weighted_routing.weight must be greater than or equal to 0."
+    condition     = alltrue([for cfg in var.alias_weighted_routing : cfg.weight >= 0])
+    error_message = "Weights in alias_weighted_routing must be greater than or equal to 0."
   }
 
   validation {
-    condition     = try(trimspace(var.alias_weighted_routing.set_identifier) != "", true)
-    error_message = "alias_weighted_routing.set_identifier must not be empty."
+    condition     = alltrue([for cfg in var.alias_weighted_routing : trimspace(cfg.set_identifier) != ""])
+    error_message = "Values of set_identifier in alias_weighted_routing must not be empty."
   }
 }
 
