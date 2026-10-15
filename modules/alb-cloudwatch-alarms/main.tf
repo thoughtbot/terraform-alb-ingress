@@ -76,6 +76,9 @@ resource "aws_cloudwatch_metric_alarm" "error_responses" {
       }
     }
   }
+
+  alarm_actions = var.alarm_actions.*.arn
+  ok_actions    = var.alarm_actions.*.arn
 }
 
 resource "aws_cloudwatch_metric_alarm" "failure_ratio" {
